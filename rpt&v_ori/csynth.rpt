@@ -1,0 +1,125 @@
+
+
+================================================================
+== Synthesis Summary Report of 'Maximum_hls'
+================================================================
++ General Information: 
+    * Date:           Fri Feb 27 20:22:12 2026
+    * Version:        2025.2 (Build 6295257 on Nov 14 2025)
+    * Project:        Maximum_hls
+    * Solution:       hls (Vivado IP Flow Target)
+    * Product family: aartix7
+    * Target device:  xa7a12t-cpg238-2I
+    
+
+* Performance & Resource Estimates: 
++---------------+------+---------------+----------+---------+------+----------+---------+--------+------+------+----+----------+----------+-----+
+|    Modules    | Issue|               | Iteration|         | Trip |          |      Latency     |      |      |    |          |          |     |
+|    & Loops    | Type | Violation Type|  Latency | Interval| Count| Pipelined| (cycles)|  (ns)  | Slack| BRAM | DSP|    FF    |    LUT   | URAM|
++---------------+------+---------------+----------+---------+------+----------+---------+--------+------+------+----+----------+----------+-----+
+|+ Maximum_hls  |     -|              -|         -|        2|     -|        no|        1|  10.000|  0.39|     -|   -|  286 (1%)|  586 (7%)|    -|
++---------------+------+---------------+----------+---------+------+----------+---------+--------+------+------+----+----------+----------+-----+
+    Name Prefix: '+' for module, 'o' for loop, '*' for dataflow
+
+
+================================================================
+== HW Interfaces
+================================================================
+* S_AXILITE Interfaces
++------------+------------+---------------+--------+----------+
+| Interface  | Data Width | Address Width | Offset | Register |
++------------+------------+---------------+--------+----------+
+| s_axi_CTRL | 32         | 6             | 24     | 0        |
++------------+------------+---------------+--------+----------+
+
+* S_AXILITE Registers
++------------+-----------+--------+-------+--------+----------------------------------+----------------------------------------------------------------------+
+| Interface  | Register  | Offset | Width | Access | Description                      | Bit Fields                                                           |
++------------+-----------+--------+-------+--------+----------------------------------+----------------------------------------------------------------------+
+| s_axi_CTRL | CTRL      | 0x00   | 32    | RW     | Control signals                  | 0=AP_START 1=AP_DONE 2=AP_IDLE 3=AP_READY 7=AUTO_RESTART 9=INTERRUPT |
+| s_axi_CTRL | GIER      | 0x04   | 32    | RW     | Global Interrupt Enable Register | 0=Enable                                                             |
+| s_axi_CTRL | IP_IER    | 0x08   | 32    | RW     | IP Interrupt Enable Register     | 0=CHAN0_INT_EN 1=CHAN1_INT_EN                                        |
+| s_axi_CTRL | IP_ISR    | 0x0c   | 32    | RW     | IP Interrupt Status Register     | 0=CHAN0_INT_ST 1=CHAN1_INT_ST                                        |
+| s_axi_CTRL | ap_return | 0x10   | 32    | R      | Data signal of ap_return         |                                                                      |
+| s_axi_CTRL | values_0  | 0x18   | 32    | W      | Data signal of values_0          |                                                                      |
+| s_axi_CTRL | values_1  | 0x20   | 32    | W      | Data signal of values_1          |                                                                      |
+| s_axi_CTRL | values_2  | 0x28   | 32    | W      | Data signal of values_2          |                                                                      |
+| s_axi_CTRL | values_3  | 0x30   | 32    | W      | Data signal of values_3          |                                                                      |
++------------+-----------+--------+-------+--------+----------------------------------+----------------------------------------------------------------------+
+
+* TOP LEVEL CONTROL
++-----------+------------+-----------+
+| Interface | Type       | Ports     |
++-----------+------------+-----------+
+| ap_clk    | clock      | ap_clk    |
+| ap_rst_n  | reset      | ap_rst_n  |
+| interrupt | interrupt  | interrupt |
+| ap_ctrl   | ap_ctrl_hs |           |
++-----------+------------+-----------+
+
+
+================================================================
+== SW I/O Information
+================================================================
+* Top Function Arguments
++----------+-----------+----------------------+
+| Argument | Direction | Datatype             |
++----------+-----------+----------------------+
+| values   | in        | unsigned int const * |
+| return   | out       | unsigned int         |
++----------+-----------+----------------------+
+
+* SW-to-HW Mapping
++----------+--------------+-----------+-------------------------------------+
+| Argument | HW Interface | HW Type   | HW Info                             |
++----------+--------------+-----------+-------------------------------------+
+| values   | s_axi_CTRL   | interface |                                     |
+| values   | s_axi_CTRL   | interface |                                     |
+| values   | s_axi_CTRL   | interface |                                     |
+| values   | s_axi_CTRL   | interface |                                     |
+| return   | s_axi_CTRL   | register  | name=ap_return offset=0x10 range=32 |
++----------+--------------+-----------+-------------------------------------+
+
+
+================================================================
+== Bind Op Report
+================================================================
++------------------------+-----+--------+-------------+--------+----------+---------+
+| Name                   | DSP | Pragma | Variable    | Op     | Impl     | Latency |
++------------------------+-----+--------+-------------+--------+----------+---------+
+| + Maximum_hls          | 0   |        |             |        |          |         |
+|   icmp_ln11_fu_64_p2   |     |        | icmp_ln11   | setlt  | auto     | 0       |
+|   maxv_2_fu_70_p3      |     |        | maxv_2      | select | auto_sel | 0       |
+|   icmp_ln11_1_fu_78_p2 |     |        | icmp_ln11_1 | setlt  | auto     | 0       |
+|   maxv_3_fu_84_p3      |     |        | maxv_3      | select | auto_sel | 0       |
+|   icmp_ln11_2_fu_92_p2 |     |        | icmp_ln11_2 | setlt  | auto     | 0       |
+|   ap_return            |     |        | maxv_5      | select | auto_sel | 0       |
++------------------------+-----+--------+-------------+--------+----------+---------+
+
+
+================================================================
+== Storage Report
+================================================================
++----------------+-----------+-----------+------+------+--------+----------+------+---------+------------------+
+| Name           | Usage     | Type      | BRAM | URAM | Pragma | Variable | Impl | Latency | Bitwidth, Depth, |
+|                |           |           |      |      |        |          |      |         | Banks            |
++----------------+-----------+-----------+------+------+--------+----------+------+---------+------------------+
+| + Maximum_hls  |           |           | 0    | 0    |        |          |      |         |                  |
+|   CTRL_s_axi_U | interface | s_axilite |      |      |        |          |      |         |                  |
++----------------+-----------+-----------+------+------+--------+----------+------+---------+------------------+
+
+
+================================================================
+== Pragma Report
+================================================================
+* Valid Pragma Syntax
++-----------------+-----------------------------------+------------------------------------------------+
+| Type            | Options                           | Location                                       |
++-----------------+-----------------------------------+------------------------------------------------+
+| INTERFACE       | s_axilite port=return bundle=CTRL | in maximum_hls (../defny-main/defny/top.cpp:3) |
+| INTERFACE       | s_axilite port=values bundle=CTRL | in maximum_hls (../defny-main/defny/top.cpp:4) |
+| ARRAY_PARTITION | variable=values complete dim=1    | in maximum_hls (../defny-main/defny/top.cpp:5) |
+| UNROLL          |                                   | in maximum_hls (../defny-main/defny/top.cpp:9) |
++-----------------+-----------------------------------+------------------------------------------------+
+
+
