@@ -48,6 +48,8 @@ The main change of the code is from
 | DSP | 0 |
 | BRAM | 0 |
 
+The table shows that our latency is raltively big but LUT and FF is small compare to code with UNROLL instruction. The slack displays a huge time abundance.
+
 ## RTL Analysis
 ```verilog
 input   ap_clk;
@@ -57,4 +59,67 @@ output   ap_done;
 output   ap_idle;
 output   ap_ready;
 ```
+### Control Path: 
+ap_start: trigger one transaction
+ap_done: asserts when complete
+ap_idle: high when waiting start
+ap_ready: indicates readiness for next
+
+### Logic component:
+| Variable | Op | Impl |
+|---|---|---|
+| icmp_ln8 | setlt | auto |
+| max_4 | setlt | auto_sel |
+| i_3 | add | fabric |
+| icmp_ln6 | seteq | auto |
+
+setlt → comparator (max < v)
+
+select → mux (choose larger value)
+
+add → loop counter increment
+
+→ 1 Comparator  1 Mux  1 Adder
+
+### Sequential Compare-and-Update Logic:
+#### Normal Version:
+```verilog
+assign ap_CS_fsm_state1 = ap_CS_fsm[32'd0];
+
+assign ap_CS_fsm_state2 = ap_CS_fsm[32'd1];
+
+assign ap_CS_fsm_state3 = ap_CS_fsm[32'd2];
+
+assign ap_CS_fsm_state4 = ap_CS_fsm[32'd3];
+
+assign ap_CS_fsm_state5 = ap_CS_fsm[32'd4];
+
+assign ap_return = max_2_loc_fu_26;
+```
+1. Single comparator reused
+2. Mux-based value selection
+3. Max stored in register
+4. Loop controlled by scheduler
+
+#### “#pragma HLS UNROLL” Version:
+```verilog
+assign icmp_ln11_1_fu_78_p2 = ((maxv_2_fu_70_p3 < values_2) ? 1'b1 : 1'b0);
+
+assign icmp_ln11_2_fu_92_p2 = ((maxv_3_reg_102 < v_4_reg_108) ? 1'b1 : 1'b0);
+
+assign icmp_ln11_fu_64_p2 = ((values_0 < values_1) ? 1'b1 : 1'b0);
+
+assign maxv_2_fu_70_p3 = ((icmp_ln11_fu_64_p2[0:0] == 1'b1) ? values_1 : values_0);
+
+assign maxv_3_fu_84_p3 = ((icmp_ln11_1_fu_78_p2[0:0] == 1'b1) ? values_2 : maxv_2_fu_70_p3);
+```
+The absence of unrolling results in a time-multiplexed datapath rather than a spatially expanded comparator network.
+
+
+
+
+
+
+
+
 
